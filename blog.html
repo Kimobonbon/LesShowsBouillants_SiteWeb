@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog Post</title>
     <style>
+        
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -44,35 +45,6 @@
     </style>
 </head>
 <body>
-
-    <div id="postContent"></div>
-
-    <script>
-        // Retrieve the blog post data from localStorage
-        const postData = JSON.parse(localStorage.getItem('blogPost'));
-
-        // Debug: Log to see if data is retrieved correctly
-        console.log('Blog post data retrieved:', postData);
-
-        if (postData) {
-            // Create the HTML content for the blog post
-            const postContent = `
-                <div class="post">
-                    <h2>${postData.title}</h2>
-                    <p class="post-meta">Posted on ${postData.date} at ${postData.time}</p>
-                    <p><strong>Author:</strong> ${postData.name}</p>
-                    <p><strong>Email:</strong> ${postData.email}</p>
-                    <p class="post-message">${postData.message}</p>
-                </div>
-            `;
-
-            // Display the blog post content
-            document.getElementById('postContent').innerHTML = postContent;
-        } else {
-            // If no blog post is found, display a message
-            document.getElementById('postContent').innerHTML = '<p>No post found.</p>';
-        }
-    </script>
 
 </body>
 </html>
