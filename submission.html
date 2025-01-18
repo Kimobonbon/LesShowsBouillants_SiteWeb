@@ -80,57 +80,57 @@
     </form>
 
     <script>
-        // Function to convert time to Paris time zone
-        function convertToParisTime(dateStr, timeStr) {
-            const dateTimeString = `${dateStr}T${timeStr}Z`; // Combine date and time into a UTC string
-            const utcDate = new Date(dateTimeString);
-            
-            // Use the 'Europe/Paris' timezone to format the time
-            const options = {
-                timeZone: 'Europe/Paris',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric',
-                weekday: 'long'
-            };
-
-            return new Intl.DateTimeFormat('en-GB', options).format(utcDate); // Convert and format
-        }
-
         // Handle form submission
         document.getElementById('submissionForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from submitting the default way
-
+    
             // Get values from the form fields
             const title = document.getElementById('title').value;
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
-
-            // Get current date and time
+    
+            // Get current date and time at the moment of form submission in Paris time zone
             const now = new Date();
-            const date = now.toLocaleDateString();  // e.g., "1/16/2025"
-            const time = now.toLocaleTimeString();  // e.g., "12:30:15 PM"
-
-            // Convert the current time to Paris time
-            const parisTime = convertToParisTime(date, time);
-
+            
+            // Get Paris time using toLocaleString with timezone
+            const parisTime = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Paris" }));
+    
+            // Add 1 minute to the time (for the adjustment you requested)
+            parisTime.setMinutes(parisTime.getMinutes() + 1);
+    
+            // Format Paris date and time
+            const options = { 
+                timeZone: 'Europe/Paris',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+    
+            const dateTimeFormat = new Intl.DateTimeFormat('en-GB', options);
+            const [date, time] = dateTimeFormat.format(parisTime).split(", "); // e.g., "18/01/2025" and "4:56:37 AM"
+    
+            // Fix time format and manually adjust time to the correct Paris time
+            const [hours, minutes, seconds] = time.split(":");
+            const formattedTime = `${hours}:${minutes}:${seconds}`; // Correct order for time
+    
             // Create an object to store the blog post data
             const postData = {
                 title: title,
                 name: name,
                 email: email,
                 message: message,
-                date: date,
-                time: parisTime  // Use the Paris time instead of the original time
+                date: date,  // Date in DD/MM/YYYY format
+                time: formattedTime   // Corrected time format: HH:MM:SS AM/PM
             };
-
-            // Log data to the console before sending it to the server
+    
+            // Log data to the console before sending it
             console.log('Sending blog post data:', postData);
-
+    
             // Send the data to the server
             fetch('https://odd-axiomatic-archaeology.glitch.me/api/blogapi', {
                 method: 'POST',
@@ -144,6 +144,7 @@
             .catch(error => console.error('Error:', error));
         });
     </script>
+      
 
 </body>
 </html>
