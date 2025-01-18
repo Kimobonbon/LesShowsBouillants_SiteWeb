@@ -106,139 +106,19 @@
             };
 
             // Log data to the console before saving to localStorage for debugging
-            console.log('Saving blog post data:', postData);
+            console.log('Sending blog post data:', postData);
 
-            // Store the blog post data in localStorage
-            localStorage.setItem('blogPost', JSON.stringify(postData));
-
-            // Log to check if the data was saved correctly
-            console.log('Blog post data saved to localStorage:', localStorage.getItem('blogPost'));
-
-            // Redirect to blog.html
-            window.location.href = 'blog.html';
-        });
-    </script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Submission Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        form {
-            background-color: #fff;
-            padding: 20px;
-            margin: 0 auto;
-            max-width: 600px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        button {
-            padding: 10px 15px;
-            background-color: #5c6bc0;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #3f51b5;
-        }
-    </style>
-</head>
-<body>
-
-    <h1>Submit Your Blog Post</h1>
-    
-    <!-- Form for blog post submission -->
-    <form id="submissionForm">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required>
-
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" required></textarea>
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <script>
-        // Handle form submission
-        document.getElementById('submissionForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting the default way
-
-            // Get values from the form fields
-            const title = document.getElementById('title').value;
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-
-            // Get current date and time
-            const now = new Date();
-            const date = now.toLocaleDateString();  // e.g., "1/16/2025"
-            const time = now.toLocaleTimeString();  // e.g., "12:30:15 PM"
-
-            // Create an object to store the blog post data
-            const postData = {
-                title: title,
-                name: name,
-                email: email,
-                message: message,
-                date: date,
-                time: time
-            };
-
-            // Log data to the console before saving to localStorage for debugging
-            console.log('Saving blog post data:', postData);
-
-            // Store the blog post data in localStorage
-            localStorage.setItem('blogPost', JSON.stringify(postData));
-
-            // Log to check if the data was saved correctly
-            console.log('Blog post data saved to localStorage:', localStorage.getItem('blogPost'));
-
-            // Redirect to blog.html
-            window.location.href = 'blog.html';
+            // Send the data to the server
+            fetch('https://odd-axiomatic-archaeology.glitch.me/api/blogapi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postData)
+})
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
         });
     </script>
 
