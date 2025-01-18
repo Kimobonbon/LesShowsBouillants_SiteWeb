@@ -80,6 +80,26 @@
     </form>
 
     <script>
+        // Function to convert time to Paris time zone
+        function convertToParisTime(dateStr, timeStr) {
+            const dateTimeString = `${dateStr}T${timeStr}Z`; // Combine date and time into a UTC string
+            const utcDate = new Date(dateTimeString);
+            
+            // Use the 'Europe/Paris' timezone to format the time
+            const options = {
+                timeZone: 'Europe/Paris',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                weekday: 'long'
+            };
+
+            return new Intl.DateTimeFormat('en-GB', options).format(utcDate); // Convert and format
+        }
+
         // Handle form submission
         document.getElementById('submissionForm').addEventListener('submit', function(event) {
             event.preventDefault(); // Prevent the form from submitting the default way
@@ -95,6 +115,9 @@
             const date = now.toLocaleDateString();  // e.g., "1/16/2025"
             const time = now.toLocaleTimeString();  // e.g., "12:30:15 PM"
 
+            // Convert the current time to Paris time
+            const parisTime = convertToParisTime(date, time);
+
             // Create an object to store the blog post data
             const postData = {
                 title: title,
@@ -102,10 +125,10 @@
                 email: email,
                 message: message,
                 date: date,
-                time: time
+                time: parisTime  // Use the Paris time instead of the original time
             };
 
-            // Log data to the console before saving to localStorage for debugging
+            // Log data to the console before sending it to the server
             console.log('Sending blog post data:', postData);
 
             // Send the data to the server
@@ -115,7 +138,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(postData)
-})
+            })
             .then(response => response.json())
             .then(data => console.log(data))
             .catch(error => console.error('Error:', error));
