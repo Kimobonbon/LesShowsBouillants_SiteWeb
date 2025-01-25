@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Previous head section remains the same -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog Submission Page</title>
     <style>
-        /* Your existing styles remain the same */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -59,17 +57,28 @@
         button:hover {
             background-color: #3f51b5;
         }
+
+        .image-container {
+            display: block;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .blog-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
     <h1>Submit Your Blog Post</h1>
     
     <form id="submissionForm">
-        <!-- Add password field -->
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
 
-        <!-- Your existing form fields -->
         <label for="title">Title:</label>
         <input type="text" id="title" name="title" required>
 
@@ -86,7 +95,6 @@
     </form>
 
     <script>
-        // Function to hash the password using SHA-256
         async function hashPassword(password) {
             const encoder = new TextEncoder();
             const data = encoder.encode(password);
@@ -96,20 +104,26 @@
                 .join('');
         }
 
+        function processMessageContent(message) {
+            // Match <img>url</img> pattern
+            const imgRegex = /<img>(.*?)<\/img>/g;
+            return message.replace(imgRegex, (match, url) => {
+                const sanitizedUrl = encodeURI(url.trim());
+                return `<div class="image-container"><img src="${sanitizedUrl}" alt="Blog image" class="blog-image"></div>`;
+            });
+        }
+
         document.getElementById('submissionForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
-            // Get password and hash it
             const password = document.getElementById('password').value;
             const hashedPassword = await hashPassword(password);
             
-            // Get other form values
             const title = document.getElementById('title').value;
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
             const message = document.getElementById('message').value;
 
-            // Your existing time handling code
             const now = new Date();
             const parisTime = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Paris" }));
             parisTime.setMinutes(parisTime.getMinutes() + 1);
@@ -131,11 +145,11 @@
             const formattedTime = `${hours}:${minutes}:${seconds}`;
 
             const postData = {
-                password: hashedPassword, // Add hashed password
+                password: hashedPassword,
                 title: title,
                 name: name,
                 email: email,
-                message: message,
+                message: processMessageContent(message),
                 date: date,
                 time: formattedTime
             };
