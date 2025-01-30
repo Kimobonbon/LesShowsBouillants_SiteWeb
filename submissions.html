@@ -10,174 +10,103 @@
             background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
+            color: rgba(243, 244, 246, 1);
         }
 
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        form {
-            background-color: #fff;
-            padding: 20px;
+        .form-container {
+            width: 320px;
+            border-radius: 0.75rem;
+            background-color: rgba(17, 24, 39, 1);
+            padding: 2rem;
             margin: 0 auto;
-            max-width: 600px;
-            border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        label {
-            display: block;
-            margin: 10px 0 5px;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        button {
-            padding: 10px 15px;
-            background-color: #5c6bc0;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #3f51b5;
-        }
-
-        .image-container {
-            display: block;
-            margin: 2rem 0;
+        .title {
             text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
-        .blog-image {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .form {
+            margin-top: 1.5rem;
+        }
+
+        .input-group {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .input-group label {
+            display: block;
+            color: rgba(156, 163, 175, 1);
+            margin-bottom: 4px;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%;
+            border-radius: 0.375rem;
+            border: 1px solid rgba(55, 65, 81, 1);
+            background-color: rgba(17, 24, 39, 1);
+            padding: 0.75rem;
+            color: rgba(243, 244, 246, 1);
+        }
+
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: rgba(167, 139, 250, 1);
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            background-color: rgba(167, 139, 250, 1);
+            padding: 0.75rem;
+            text-align: center;
+            color: rgba(17, 24, 39, 1);
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: rgba(139, 92, 246, 1);
         }
     </style>
 </head>
 <body>
-    <h1>Submit Your Blog Post</h1>
-    
-    <form id="submissionForm">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required>
-
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-
-        <label for="message">Message:</label>
-        <textarea id="message" name="message" required></textarea>
-
-        <button type="submit">Submit</button>
-    </form>
-
-    <script>
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hash = await crypto.subtle.digest('SHA-256', data);
-            return Array.from(new Uint8Array(hash))
-                .map(b => b.toString(16).padStart(2, '0'))
-                .join('');
-        }
-
-        function processMessageContent(message) {
-            // Match <img>url</img> pattern
-            const imgRegex = /<img>(.*?)<\/img>/g;
-            return message.replace(imgRegex, (match, url) => {
-                const sanitizedUrl = encodeURI(url.trim());
-                return `<div class="image-container"><img src="${sanitizedUrl}" alt="Blog image" class="blog-image"></div>`;
-            });
-        }
-
-        document.getElementById('submissionForm').addEventListener('submit', async function(event) {
-            event.preventDefault();
-
-            const password = document.getElementById('password').value;
-            const hashedPassword = await hashPassword(password);
+    <div class="form-container">
+        <h1 class="title">Submit Your Blog Post</h1>
+        
+        <form id="submissionForm" class="form">
+            <div class="input-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
             
-            const title = document.getElementById('title').value;
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-
-            const now = new Date();
-            const parisTime = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Paris" }));
-            parisTime.setMinutes(parisTime.getMinutes() + 1);
-
-            const options = { 
-                timeZone: 'Europe/Paris',
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true
-            };
-
-            const dateTimeFormat = new Intl.DateTimeFormat('en-GB', options);
-            const [date, time] = dateTimeFormat.format(parisTime).split(", ");
-            const [hours, minutes, seconds] = time.split(":");
-            const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-            const postData = {
-                password: hashedPassword,
-                title: title,
-                name: name,
-                email: email,
-                message: processMessageContent(message),
-                date: date,
-                time: formattedTime
-            };
-
-            console.log('Sending blog post data:', {...postData, password: '[HIDDEN]'});
-
-            fetch('https://odd-axiomatic-archaeology.glitch.me/api/blogapi', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(postData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    alert('Error: ' + data.error);
-                } else {
-                    console.log(data);
-                    alert('Blog post submitted successfully!');
-                    document.getElementById('submissionForm').reset();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error submitting blog post. Please try again.');
-            });
-        });
-    </script>
+            <div class="input-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="input-group">
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
 </body>
 </html>
