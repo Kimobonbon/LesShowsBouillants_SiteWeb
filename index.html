@@ -97,7 +97,96 @@
         <a href="ifon.html">À propos</a>
         <a href="contacte.html">Contact</a>
     </div>
+    <style>
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { margin: 0; background: linear-gradient(135deg, #667eea, #764ba2); }
+        .slider { position: relative; width: 100vw; height: 50vh; overflow: hidden; }
+        .slides { display: flex; transition: transform 0.5s ease-in-out; height: 100%; }
+        .slide { min-width: 100vw; height: 50vh; transition: opacity 1s; }
+        .slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .prev, .next {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6); color: white; border: none;
+            padding: 12px; cursor: pointer; font-size: 20px; border-radius: 50%;
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+        .slider:hover .prev, .slider:hover .next { opacity: 1; }
+        .prev { left: 15px; }
+        .next { right: 15px; }
+        .dots { text-align: center; padding: 10px; position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); }
+        .dot { height: 12px; width: 12px; margin: 0 5px; background-color: rgba(255, 255, 255, 0.5); border-radius: 50%; display: inline-block; cursor: pointer; transition: background 0.3s; }
+        .dot.active { background-color: white; }
+    </style>
+</head>
+<body>
+    <div class="slider">
+        <div class="slides">
+            <div class="slide"><img href="/images/slider_1.jpeg" alt="Image 1"></div>
+            <div class="slide"><img href="/images/slider_2.jpeg" alt="Image 2"></div>
+            <div class="slide"><img href="/images/slider_3.jpeg" alt="Image 3"></div>
+        </div>
+        <button class="prev">&#10094;</button>
+        <button class="next">&#10095;</button>
+        <div class="dots"></div>
+    </div>
     
+    <script>
+        let index = 0;
+        const slides = document.querySelector(".slides");
+        const totalSlides = document.querySelectorAll(".slide").length;
+        const dotsContainer = document.querySelector(".dots");
+        let autoSlideInterval;
+        let isManual = false;
+
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(() => {
+                if (!isManual) showSlide(index + 1);
+            }, 3000);
+        }
+
+        function stopAutoSlideTemporarily() {
+            isManual = true;
+            clearInterval(autoSlideInterval);
+            setTimeout(() => {
+                isManual = false;
+                startAutoSlide();
+            }, 5000);
+        }
+
+        for (let i = 0; i < totalSlides; i++) {
+            let dot = document.createElement("span");
+            dot.classList.add("dot");
+            dot.addEventListener("click", () => {
+                showSlide(i);
+                stopAutoSlideTemporarily();
+            });
+            dotsContainer.appendChild(dot);
+        }
+        
+        const dots = document.querySelectorAll(".dot");
+        function showSlide(i) {
+            if (i >= totalSlides) index = 0;
+            else if (i < 0) index = totalSlides - 1;
+            else index = i;
+            
+            slides.style.transform = `translateX(${-index * 100}%)`;
+            dots.forEach(dot => dot.classList.remove("active"));
+            dots[index].classList.add("active");
+        }
+        
+        document.querySelector(".prev").addEventListener("click", () => {
+            showSlide(index - 1);
+            stopAutoSlideTemporarily();
+        });
+        document.querySelector(".next").addEventListener("click", () => {
+            showSlide(index + 1);
+            stopAutoSlideTemporarily();
+        });
+        
+        showSlide(0);
+        startAutoSlide();   
     <script>
         function openMenu() {
             document.getElementById("sideMenu").style.width = "250px";
