@@ -7,6 +7,90 @@
     <link rel="icon" href="images/logo_equipe.png" type="image/png">
 </head>
 <body>
+ <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f8ff;
+        }
+        
+        .menu {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: #1e293b;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            box-shadow: -5px 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .menu a {
+            padding: 12px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+            border-radius: 5px;
+            margin: 5px 15px;
+        }
+        
+        .menu a:hover {
+            background-color: #334155;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .open-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 20px;
+            padding: 12px 20px;
+            background-color: #1e293b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        
+        .open-btn:hover {
+            background-color: #334155;
+        }
+    </style>
+</head>
+<body>
+    <button class="open-btn" onclick="openMenu()">☰ Ouvrir le Menu</button>
+    
+    <div id="sideMenu" class="menu">
+        <span class="close-btn" onclick="closeMenu()">&times;</span>
+        <a href="index.html">Accueil</a>
+        <a href="ifon.html">À propos</a>
+        <a href="contacte.html">Contact</a>
+    </div>
+    
+    <script>
+        function openMenu() {
+            document.getElementById("sideMenu").style.width = "250px";
+        }
+        
+        function closeMenu() {
+            document.getElementById("sideMenu").style.width = "0";
+        }
+    </script>
+
     <h1>Accueille</h1>
     <p>
         Qui sont Les Shows Bouillants?
